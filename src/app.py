@@ -25,12 +25,16 @@ def create_app(config_name: str | None = None) -> Flask:
     )
     app.config.from_object(config_class)
 
+    from src.routes.api_routes import api_bp
     from src.routes.task_routes import tasks_bp
 
     app.register_blueprint(tasks_bp)
+    app.register_blueprint(api_bp)
+
     return app
 
 
 if __name__ == "__main__":
     app = create_app()
     app.run(debug=True, host="0.0.0.0", port=5000)
+
