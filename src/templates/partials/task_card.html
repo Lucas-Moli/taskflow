@@ -1,0 +1,54 @@
+<article class="group flex flex-col rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-5 shadow-card transition duration-300 hover:-translate-y-0.5 hover:border-indigo-500/30 hover:shadow-card-hover">
+    <div class="mb-4 flex items-start justify-between gap-3">
+        <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold
+            {% if task.status == 'Pendente' %} bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30
+            {% elif task.status == 'Em andamento' %} bg-sky-500/15 text-sky-300 ring-1 ring-sky-500/30
+            {% else %} bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30 {% endif %}">
+            {{ task.status }}
+        </span>
+        <span class="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider
+            {% if task.priority == 'Alta' %} text-red-400
+            {% elif task.priority == 'Média' %} text-orange-400
+            {% else %} text-slate-400 {% endif %}">
+            <span class="h-2 w-2 rounded-full
+                {% if task.priority == 'Alta' %} bg-red-400
+                {% elif task.priority == 'Média' %} bg-orange-400
+                {% else %} bg-slate-500 {% endif %}"></span>
+            {{ task.priority }}
+        </span>
+    </div>
+
+    <h4 class="mb-2 text-lg font-bold text-white group-hover:text-indigo-200 transition-colors">{{ task.title }}</h4>
+    <p class="mb-5 flex-1 text-sm leading-relaxed text-slate-400 line-clamp-3">{{ task.description }}</p>
+
+    <div class="flex items-center justify-between gap-2 border-t border-white/10 pt-4">
+        <div class="flex flex-wrap gap-2">
+            {% if task.status != 'Concluída' %}
+            <form method="POST" action="/task/complete/{{ task.id }}">
+                <button type="submit"
+                    class="inline-flex items-center gap-1 rounded-lg bg-emerald-600/90 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-400/50">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Concluir
+                </button>
+            </form>
+            {% endif %}
+            <button type="button"
+                onclick="openEditModal({{ task.id }}, {{ task.title|tojson }}, {{ task.description|tojson }}, {{ task.priority|tojson }}, {{ task.status|tojson }})"
+                class="inline-flex items-center gap-1 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-slate-200 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/20">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                Editar
+            </button>
+        </div>
+        <form method="POST" action="/task/delete/{{ task.id }}"
+            onsubmit="return confirm('Deseja realmente excluir esta tarefa?');">
+            <button type="submit"
+                class="rounded-lg px-2 py-1.5 text-xs font-semibold text-red-400 transition hover:bg-red-500/10 hover:text-red-300 focus:outline-none focus:ring-2 focus:ring-red-400/30">
+                Excluir
+            </button>
+        </form>
+    </div>
+</article>

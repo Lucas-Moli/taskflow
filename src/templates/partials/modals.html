@@ -1,0 +1,108 @@
+<div id="create-modal" data-modal role="dialog" aria-labelledby="create-modal-title" aria-hidden="true"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900 p-6 shadow-2xl shadow-black/40" data-modal-panel>
+        <div class="mb-5 flex items-start justify-between">
+            <div>
+                <h2 id="create-modal-title" class="text-xl font-bold text-white">Nova tarefa logística</h2>
+                <p class="mt-1 text-sm text-slate-400">Cadastre uma nova ordem operacional.</p>
+            </div>
+            <button type="button" data-modal-close aria-label="Fechar"
+                class="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <form method="POST" action="/task/create" class="space-y-4">
+            <div>
+                <label for="create-title" class="mb-1.5 block text-sm font-medium text-slate-300">Título</label>
+                <input type="text" id="create-title" name="title" required
+                    class="w-full rounded-xl border border-white/10 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30">
+            </div>
+            <div>
+                <label for="create-description" class="mb-1.5 block text-sm font-medium text-slate-300">Descrição</label>
+                <textarea id="create-description" name="description" rows="3" required
+                    class="w-full resize-none rounded-xl border border-white/10 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"></textarea>
+            </div>
+            <div>
+                <label for="create-priority" class="mb-1.5 block text-sm font-medium text-slate-300">Prioridade</label>
+                <select id="create-priority" name="priority"
+                    class="w-full rounded-xl border border-white/10 bg-slate-800/80 px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30">
+                    <option value="Alta" class="bg-slate-800">Alta</option>
+                    <option value="Média" selected class="bg-slate-800">Média</option>
+                    <option value="Baixa" class="bg-slate-800">Baixa</option>
+                </select>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" data-modal-close
+                    class="rounded-xl border border-white/15 px-4 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5">
+                    Cancelar
+                </button>
+                <button type="submit"
+                    class="rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:from-indigo-400 hover:to-violet-500">
+                    Salvar tarefa
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="edit-modal" data-modal role="dialog" aria-labelledby="edit-modal-title" aria-hidden="true"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900 p-6 shadow-2xl shadow-black/40" data-modal-panel>
+        <div class="mb-5 flex items-start justify-between">
+            <div>
+                <h2 id="edit-modal-title" class="text-xl font-bold text-white">Editar tarefa</h2>
+                <p class="mt-1 text-sm text-slate-400">Atualize os dados da ordem logística.</p>
+            </div>
+            <button type="button" data-modal-close aria-label="Fechar"
+                class="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <form id="edit-form" method="POST" action="" class="space-y-4">
+            <div>
+                <label for="edit-title" class="mb-1.5 block text-sm font-medium text-slate-300">Título</label>
+                <input type="text" id="edit-title" name="title" required
+                    class="w-full rounded-xl border border-white/10 bg-slate-800/80 px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30">
+            </div>
+            <div>
+                <label for="edit-description" class="mb-1.5 block text-sm font-medium text-slate-300">Descrição</label>
+                <textarea id="edit-description" name="description" rows="3" required
+                    class="w-full resize-none rounded-xl border border-white/10 bg-slate-800/80 px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="edit-priority" class="mb-1.5 block text-sm font-medium text-slate-300">Prioridade</label>
+                    <select id="edit-priority" name="priority"
+                        class="w-full rounded-xl border border-white/10 bg-slate-800/80 px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30">
+                        <option value="Alta" class="bg-slate-800">Alta</option>
+                        <option value="Média" class="bg-slate-800">Média</option>
+                        <option value="Baixa" class="bg-slate-800">Baixa</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="edit-status" class="mb-1.5 block text-sm font-medium text-slate-300">Status</label>
+                    <select id="edit-status" name="status"
+                        class="w-full rounded-xl border border-white/10 bg-slate-800/80 px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30">
+                        <option value="Pendente" class="bg-slate-800">Pendente</option>
+                        <option value="Em andamento" class="bg-slate-800">Em andamento</option>
+                        <option value="Concluída" class="bg-slate-800">Concluída</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" data-modal-close
+                    class="rounded-xl border border-white/15 px-4 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5">
+                    Cancelar
+                </button>
+                <button type="submit"
+                    class="rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:from-indigo-400 hover:to-violet-500">
+                    Atualizar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

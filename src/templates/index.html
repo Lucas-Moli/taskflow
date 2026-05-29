@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}TaskFlow — Painel Logístico{% endblock %}
+
+{% block body %}
+<header class="sticky top-0 z-40 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/30">
+                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight text-white sm:text-xl">TaskFlow</h1>
+                <p class="text-xs text-slate-400">TechFlow Solutions · Gestão logística</p>
+            </div>
+        </div>
+        <button type="button" onclick="toggleModal('create-modal')"
+            class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:from-indigo-400 hover:to-violet-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+            Nova tarefa
+        </button>
+    </div>
+</header>
+
+<main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <section class="mb-8">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-white sm:text-3xl">Painel operacional</h2>
+            <p class="mt-1 text-slate-400">Acompanhe ordens logísticas, prioridades e status em tempo real.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:gap-4">
+            <article class="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+                <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Total</p>
+                <p class="mt-1 text-2xl font-bold text-white">{{ stats.total }}</p>
+            </article>
+            <article class="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 backdrop-blur-sm">
+                <p class="text-xs font-medium uppercase tracking-wider text-amber-300/80">Pendentes</p>
+                <p class="mt-1 text-2xl font-bold text-amber-200">{{ stats.pendente }}</p>
+            </article>
+            <article class="rounded-2xl border border-sky-500/20 bg-sky-500/10 p-4 backdrop-blur-sm">
+                <p class="text-xs font-medium uppercase tracking-wider text-sky-300/80">Em andamento</p>
+                <p class="mt-1 text-2xl font-bold text-sky-200">{{ stats.em_andamento }}</p>
+            </article>
+            <article class="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 backdrop-blur-sm">
+                <p class="text-xs font-medium uppercase tracking-wider text-emerald-300/80">Concluídas</p>
+                <p class="mt-1 text-2xl font-bold text-emerald-200">{{ stats.concluida }}</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md sm:p-6">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+                <svg class="h-5 w-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                </svg>
+                <h3 class="font-semibold text-white">Busca e filtros</h3>
+            </div>
+            {% if has_filters %}
+            <span class="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-medium text-indigo-300">
+                {{ filtered_count }} resultado{{ 's' if filtered_count != 1 else '' }}
+            </span>
+            {% endif %}
+        </div>
+
+        <form method="GET" action="/" class="grid grid-cols-1 gap-4 md:grid-cols-12 md:items-end">
+            <div class="md:col-span-4">
+                <label for="search" class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">Pesquisar</label>
+                <div class="relative">
+                    <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" id="search" name="search" value="{{ search }}"
+                        placeholder="Título ou descrição..."
+                        class="w-full rounded-xl border border-white/10 bg-slate-900/60 py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-500 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30">
+                </div>
+            </div>
+            <div class="md:col-span-3">
+                <label for="priority" class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">Prioridade</label>
+                <select id="priority" name="priority"
+                    class="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30">
+                    <option value="" class="bg-slate-900">Todas</option>
+                    <option value="Alta" {% if priority == 'Alta' %}selected{% endif %} class="bg-slate-900">Alta</option>
+                    <option value="Média" {% if priority == 'Média' %}selected{% endif %} class="bg-slate-900">Média</option>
+                    <option value="Baixa" {% if priority == 'Baixa' %}selected{% endif %} class="bg-slate-900">Baixa</option>
+                </select>
+            </div>
+            <div class="md:col-span-3">
+                <label for="status" class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">Status</label>
+                <select id="status" name="status"
+                    class="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30">
+                    <option value="" class="bg-slate-900">Todos</option>
+                    <option value="Pendente" {% if status == 'Pendente' %}selected{% endif %} class="bg-slate-900">Pendente</option>
+                    <option value="Em andamento" {% if status == 'Em andamento' %}selected{% endif %} class="bg-slate-900">Em andamento</option>
+                    <option value="Concluída" {% if status == 'Concluída' %}selected{% endif %} class="bg-slate-900">Concluída</option>
+                </select>
+            </div>
+            <div class="flex gap-2 md:col-span-2">
+                <button type="submit"
+                    class="flex-1 rounded-xl bg-white py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-white/50">
+                    Filtrar
+                </button>
+                <a href="/"
+                    class="flex flex-1 items-center justify-center rounded-xl border border-white/15 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white">
+                    Limpar
+                </a>
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <div class="mb-4 flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-white">Tarefas</h3>
+            {% if stats.alta > 0 %}
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-xs font-medium text-red-300">
+                <span class="h-1.5 w-1.5 rounded-full bg-red-400 animate-pulse"></span>
+                {{ stats.alta }} prioridade alta
+            </span>
+            {% endif %}
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {% for task in tasks %}
+            {% include "partials/task_card.html" %}
+            {% else %}
+            <div class="col-span-full flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/5 px-6 py-16 text-center backdrop-blur-sm">
+                <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-800/80">
+                    <svg class="h-7 w-7 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                    </svg>
+                </div>
+                <p class="font-medium text-slate-300">Nenhuma tarefa encontrada</p>
+                <p class="mt-1 max-w-sm text-sm text-slate-500">Ajuste os filtros ou crie uma nova ordem logística.</p>
+                <button type="button" onclick="toggleModal('create-modal')"
+                    class="mt-6 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">
+                    Criar primeira tarefa
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+
+<footer class="mx-auto max-w-7xl px-4 py-8 text-center text-xs text-slate-500 sm:px-6 lg:px-8">
+    TaskFlow © 2026 TechFlow Solutions · Engenharia de Software
+</footer>
+
+{% include "partials/modals.html" %}
+{% endblock %}
