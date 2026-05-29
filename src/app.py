@@ -24,6 +24,10 @@ def create_app(config_name: str | None = None) -> Flask:
         ),
     )
     app.config.from_object(config_class)
+
+    from src.routes.task_routes import tasks_bp
+
+    app.register_blueprint(tasks_bp)
     return app
 
 
