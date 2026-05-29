@@ -18,16 +18,28 @@ def _build_stats(tasks: list) -> dict:
 
 @tasks_bp.route("/")
 def index():
+    search_query = request.args.get("search", "")
+    filter_priority = request.args.get("priority", "")
+    filter_status = request.args.get("status", "")
+
     all_tasks = task_repository.get_all()
+    tasks = task_service.list_tasks(
+        search=search_query,
+        priority=filter_priority,
+        status=filter_status,
+    )
+
+    has_filters = bool(search_query or filter_priority or filter_status)
+
     return render_template(
         "index.html",
-        tasks=all_tasks,
-        search="",
-        priority="",
-        status="",
+        tasks=tasks,
+        search=search_query,
+        priority=filter_priority,
+        status=filter_status,
         stats=_build_stats(all_tasks),
-        filtered_count=len(all_tasks),
-        has_filters=False,
+        filtered_count=len(tasks),
+        has_filters=has_filters,
     )
 
 
@@ -48,6 +60,7 @@ def create():
 def update(task_id):
     if not task_service.get_task(task_id):
         return redirect(url_for("tasks.index"))
+
     try:
         task_service.update_task(
             task_id=task_id,
@@ -71,3 +84,4 @@ def complete(task_id):
 def delete(task_id):
     task_service.delete_task(task_id)
     return redirect(url_for("tasks.index"))
+
