@@ -1,0 +1,62 @@
+name: TaskFlow Continuous Integration
+
+on:
+  push:
+    branches: [main, master, "feature/**"]
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  test-and-validate:
+    name: PyTest · Python 3.11
+    runs-on: ubuntu-latest
+
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+      FLASK_ENV: testing
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python Environment (3.11)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install Project Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Automated Unit Tests (PyTest)
+        run: |
+          python -m pytest tests/ \
+            --junitxml=pytest-report.xml \
+            --cov=src \
+            --cov-report=term-missing \
+            --cov-report=xml:coverage.xml
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always() && !cancelled() && github.event.pull_request.head.repo.full_name == github.repository
+        with:
+          files: pytest-report.xml
+          check_name: TaskFlow PyTest Results
+
+      - name: Upload Test Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports
+          path: |
+            pytest-report.xml
+            coverage.xml
+          retention-days: 14
