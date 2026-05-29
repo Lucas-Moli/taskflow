@@ -118,6 +118,17 @@ Estrutura em `tests/`:
 
 O workflow `.github/workflows/ci.yml` roda automaticamente em `push` e `pull_request` para `main`/`master` e branches `feature/**`, instalando dependÃªncias, executando PyTest e publicando o relatÃ³rio JUnit na aba Checks do PR.
 
+### GitHub Projects (Kanban)
+
+Quadro da Sprint 01 com colunas **To Do**, **In Progress** e **Done**:
+
+```powershell
+gh auth login
+powershell -ExecutionPolicy Bypass -File scripts/setup-github-kanban.ps1
+```
+
+Cards do blueprint: `docs/kanban-cards.md` · ImportaÃ§Ã£o manual: `.github/kanban/IMPORT.md`
+
 ---
 
 ## LicenÃ§a
