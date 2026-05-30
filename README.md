@@ -56,8 +56,6 @@ taskflow/
 └── README.md
 ```
 
-```
-
 ## API REST (`/api`)
 
 | Método | Rota | Descrição |
